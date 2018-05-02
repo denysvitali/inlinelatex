@@ -22,7 +22,7 @@ import config_reader
 import latex_generator
 
 
-class InlineTexBot(telepot.async.Bot):
+class InlineTexBot(telepot.aio.Bot):
     async def handle(self, msg):
         flavor = telepot.flavor(msg)
         if flavor == 'normal':
@@ -64,7 +64,7 @@ initialize_loggers()
 TOKEN = config_reader.token
 
 bot = InlineTexBot(TOKEN)
-answerer = telepot.async.helper.Answerer(bot, compute_answer)
+answerer = telepot.aio.helper.Answerer(bot, compute_answer)
 server_logger = logging.getLogger('server_logger')
 
 loop = asyncio.get_event_loop()
