@@ -12,7 +12,7 @@ the script terminates.
 
 import asyncio
 import telepot
-import telepot.async
+import telepot.aio
 from telepot.namedtuple import InlineQueryResultPhoto, InlineQueryResultArticle
 import logging
 import os
