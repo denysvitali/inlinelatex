@@ -19,28 +19,38 @@ import asyncio.subprocess
 
 loop = None     # type: asyncio.BaseEventLoop
 run_dir = ""    # type: str
+output_dir = "img"
 
 async def process(user: str, latex_expr: str) -> Tuple[str, int, int]:
     file_hash = get_hash(latex_expr)
-    if not await url_is_available(http_address.format(get_hash(latex_expr))):
+    file_subpath = os.path.join(file_hash) + ".jpg"
+    file_path = os.path.join(run_dir, output_dir, file_subpath)
+    dir_path = os.path.join(run_dir, output_dir)
+    if not os.path.isfile(file_path):
         user_path = os.path.join(run_dir, user)
+        print("File Hash: {}\nFile Subpath: {}\nFile Path: {}".format(file_hash,
+            file_subpath,
+            file_path
+            )
+        )
         try:
-            if os.path.exists(user_path):
-                shutil.rmtree(user_path)
+            if os.path.exists(dir_path):
+                shutil.rmtree(dir_path)
 
-            os.mkdir(user_path)
+            os.mkdir(dir_path)
 
-            await write_to_file(latex_expr, user_path)
-            await create_pdf(user_path)
-            jpg_path = await convert_pdf_to_jpg(user_path, file_hash)
-            width, height = await get_width_and_height(user_path, file_hash)
-            await copy_to_server(jpg_path, remote_path)
+            await write_to_file(latex_expr, dir_path)
+            await create_pdf(dir_path)
+            jpg_path = await convert_pdf_to_jpg(dir_path, file_hash)
+            width, height = await get_width_and_height(dir_path, file_hash)
+            print("JPG: {}".format(jpg_path))
+            #await copy_to_server(jpg_path, remote_path)
         except asyncio.CancelledError:
             tex_logger.info("Processing query cancelled.\n")
             raise
 
     tex_logger.debug("Sent (%s, %s, %s)\n" % (http_address.format(file_hash), width, height))
-    return http_address.format(file_hash), int(width), int(height)
+    return http_address.format(file_subpath), int(width), int(height)
 
 
 async def write_to_file(latex_expr: str, user_path: str) -> None:
