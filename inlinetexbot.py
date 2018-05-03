@@ -14,7 +14,7 @@ import asyncio
 import telepot
 import telepot.aio
 import telepot.aio.loop
-from telepot.namedtuple import InlineQueryResultPhoto, InlineQueryResultArticle
+from telepot.namedtuple import InlineQueryResultPhoto, InlineQueryResultArticle, InputTextMessageContent
 from telepot.aio.loop import MessageLoop
 from telepot.aio.helper import InlineUserHandler, AnswererMixin
 from telepot.aio.delegate import per_inline_from_id, create_open, pave_event_space
@@ -47,13 +47,13 @@ class InlineHandler(InlineUserHandler, AnswererMixin):
             def get_error_query():
                 return [InlineQueryResultArticle(id="latex_start", title='Invalid LaTex',
                                                  description="Couldn't parse your input.",
-                                                 message_text="Sorry, I lost my way around. Didn't mean to send this.",
+                                            input_message_content=InputTextMessageContent(     message_text="Sorry, I lost my way around. Didn't mean to send this."),
                                                  type='article')]
             if len(msg['query']) < 1: 
                 results = [InlineQueryResultArticle(id="latex_start", title='Enter LaTeX',
                                                     description="Waiting to process your equation. No need to add math mode, "
                                                                     "I'll take care of that.",
-                                                        message_text="Sorry, I lost my way around. Didn't mean to send this.",
+                                                       input_message_content=InputTextMessageContent( message_text="Sorry, I lost my way around. Didn't mean to send this."),
                                                     thumb_url='http://a1.mzstatic.com/eu/r30/Purple69/v4/b2/f2/92/b2f292f4-a27f'
                                                               '-7ecc-fa20-19d84095e035/icon256.png', thumb_width=256,
                                                     thumb_height=256, type='article')]
